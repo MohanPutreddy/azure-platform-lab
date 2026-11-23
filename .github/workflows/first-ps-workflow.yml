@@ -1,0 +1,33 @@
+name: First PowerShell Workflow
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment_name:
+        description: 'Target environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+
+jobs:
+  check-and-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run PowerShell script
+        shell: pwsh
+        env:
+          TARGET_ENV: ${{ inputs.environment_name || 'dev' }}
+        run: |
+          Write-Host "Hello from PowerShell 7 on Linux!"
+          Write-Host "Target Environment: $env:TARGET_ENV"
+          Get-ChildItem -Force
